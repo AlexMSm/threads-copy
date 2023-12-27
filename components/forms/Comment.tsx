@@ -19,6 +19,7 @@ import { Button } from "../ui/button";
 
 import { CommentValidation } from "@/lib/validations/thread";
 import { addCommentToThread } from "@/lib/actions/thread.actions";
+import { useRouter } from "next/router";
 
 interface Props {
   threadId: string;
@@ -28,6 +29,7 @@ interface Props {
 
 function Comment({ threadId, currentUserImg, currentUserId }: Props) {
   const pathname = usePathname();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof CommentValidation>>({
     resolver: zodResolver(CommentValidation),
@@ -81,7 +83,7 @@ function Comment({ threadId, currentUserImg, currentUserId }: Props) {
         </Button>
       </form>
     </Form>
-  );
+  )
 }
 
 export default Comment;
