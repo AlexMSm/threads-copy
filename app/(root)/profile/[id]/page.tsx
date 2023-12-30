@@ -2,22 +2,23 @@ import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { fetchUser } from "@/lib/actions/user.actions";
 import ProfileHeader from "@/components/shared/ProfileHeader";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { profileTabs } from "@/constants";
 import Image from "next/image";
+import ThreadsTab from "@/components/shared/ThreadTab";
 
 
 
 const Page = async ({ params }: { params: { id: string } }) => {
+    
     const user = await currentUser();
     if (!user) return null;
-  
+
     // fetch organization list created by user
     const userInfo = await fetchUser(params.id);
     if (!userInfo?.onboarded) redirect("/onboarding");
     
-    return 
-        (
+    return ( 
         <section>
             <ProfileHeader 
             accountId = {userInfo.id}
@@ -43,6 +44,15 @@ const Page = async ({ params }: { params: { id: string } }) => {
                             </TabsTrigger>)
                         )}
                     </TabsList>
+                    {profileTabs.map((tab) => (
+                        <TabsContent key={`content-${tab.label}`} value={tab.value} className="w-full text-light-1">
+                            {/* @ts-ignore */}
+                            <ThreadsTab
+                            currentUserId={user.id}
+                            accountId={userInfo.id}
+                            accountType="User"/>
+                        </TabsContent>
+                    ))}
                 </Tabs>
             </div>
         </section>
